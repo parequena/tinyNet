@@ -59,7 +59,7 @@
         "CMAKE_C_COMPILER": "clang",
         "CMAKE_CXX_COMPILER": "clang++",
         "CMAKE_BUILD_TYPE": "Debug",
-        "SPECIFIC_COMPILER_WARNINGS": "-Weverything;-Wno-c++98-compat;-Wno-padded;-Wno-missing-prototypes"
+        "SPECIFIC_COMPILER_WARNINGS": "-Weverything;-Wno-c++98-compat;-Wno-unsafe-buffer-usage;"
       }
     },
     {
