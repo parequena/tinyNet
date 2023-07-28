@@ -5,8 +5,9 @@
 #include <string> // std::string
 #include <queue> // std::queue
 
-#if defined(__CYGWIN__) || defined(__MSYS__)
+#if defined(__CYGWIN__) || defined(__MSYS__) || defined(_WIN64)
 #define TINY_NET_WINDOWS
+#include <winsock2.h>
 #elif defined(__linux__)
 #define TINY_NET_LINUX
 #else
@@ -41,19 +42,22 @@ struct Server
     void pollMessages() noexcept;
 
 private:
-    // Socket filde descryptor.
-    int socketFd_{};
-
     // Listening port
     std::uint16_t port_{};
+
+    // Socket filde descryptor.
+#if defined(TINY_NET_LINUX)
+    int socketFd_{};
+#else
+    SOCKET socketFd_{};
+#endif
 
     // Messages.
     std::queue<Message> messages_{};
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Check Value.
-    static void checkValue(int const value, std::string const& message);
-
+    static void checkValue(int const value, std::string message);
 };
 } // namespace tinyNet
 
