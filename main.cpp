@@ -1,21 +1,28 @@
-#include <iostream>
+#include <iostream> // std::cerr
 #include <span> // std::span
 #include <vector> // std::vector
 #include <ranges> // std::ranges::subrange
-#include <cstdint>
+#include <limits> // std::numeric_limits
 
 #include <Server.hpp>
 
-
-int better_main(std::span<std::string> const args)
+static int better_main(std::span<std::string> const args)
 {
     if( args.size() < 1 )
     {
         std::cerr << "Failed with arguments, try executing:\n./executable <port_number>\n";
         return EXIT_FAILURE;
     }
+
+    int const original_port { std::stoi(args[0]) };
+    int const uint16_max = std::numeric_limits<std::uint16_t>::max();
+    if(original_port < 0 || original_port > uint16_max)
+    {
+        std::cerr << "ERROR: Port number invalid, found: " << std::to_string(original_port) << ", must be in range: [ 0 - " << std::to_string(uint16_max) << "].\n";
+        return EXIT_FAILURE;
+    }
     
-    std::uint16_t const port = std::stoi(args[0]) & 0xffff; // std::uint16 max
+    std::uint16_t const port = static_cast<std::uint16_t>(original_port);
     tinyNet::Server server{ port };
 
     while(server.recieveMessages());
@@ -30,8 +37,5 @@ int main(int const argc, char const* const* const argv)
     auto result = std::ranges::subrange(&argv[1], &argv[argc]);
     std::vector<std::string> args{ result.begin(), result.end() };
 
-// #if defined(TINY_NET_WINDOWS)
-//     args.emplace_back("8221");
-// #endif
     return better_main(args);
 }

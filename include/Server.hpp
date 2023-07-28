@@ -44,6 +44,9 @@ struct Server
 private:
     // Listening port
     std::uint16_t port_{};
+    
+    // Padding!
+    [[maybe_unused]] std::uint16_t mp_error_on_use_padding_solution{};
 
     // Socket filde descryptor.
 #if defined(TINY_NET_LINUX)
@@ -58,6 +61,7 @@ private:
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Check Value.
     static void checkValue(int const value, std::string message);
+
 };
 } // namespace tinyNet
 
