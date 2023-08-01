@@ -35,8 +35,5 @@ int main(int const argc, char const* const* const argv)
     auto result = std::ranges::subrange(&argv[1], &argv[argc]);
     std::vector<std::string> args{ result.begin(), result.end() };
 
-    args.emplace_back("::1");
-    args.emplace_back("5657");
-
     return better_main(args);
 }

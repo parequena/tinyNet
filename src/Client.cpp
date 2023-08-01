@@ -34,7 +34,7 @@ bool Client::sendMessage() const noexcept
    {
       if(buffer == "exit") { return false; }
 
-      auto const sent = sendto(socket_.FileDescriptor(), reinterpret_cast<void const*>(&buffer), buffer.size(), 0, reinterpret_cast<sockaddr const*>(&serverInfo_), sizeof(serverInfo_));
+      auto const sent = sendto(socket_.FileDescriptor(), buffer.data(), buffer.size(), 0, reinterpret_cast<sockaddr const*>(&serverInfo_), sizeof(serverInfo_));
       if (sent == -1)
       {
 #if defined(TINY_NET_LINUX)
@@ -53,5 +53,4 @@ bool Client::sendMessage() const noexcept
    // ssize_t sendto(int sockfd, const void *buf, size_t len, int flags, const struct sockaddr *dest_addr, socklen_t addrlen);
    return true;
 }
-
 } // namespace tinyNet
