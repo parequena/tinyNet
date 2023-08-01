@@ -4,7 +4,7 @@
 Tiny Networking examples done on streaming via [Twitch](www.twitch.tv/theApoCa) (In Spanish) and It's saved on [Youtube](https://www.youtube.com/playlist?list=PLBEviA0cKSijxLaqOVXHsZAxSwb9yYml4)<br/>
 Inspired by this [theCherno video](https://www.youtube.com/watch?v=jS9rBienEFQ), I wanted to create the following videos/features.
  * [x] Create Server UDP (Linux/Windows).
- * [ ] Create Client UDP (Linux/Windows).
+ * [x] Create Client UDP (Linux/Windows).
     * [x] Move all Common code into a new `struct/class`
     * [ ] Client maybe will create a [jthread](https://en.cppreference.com/w/cpp/thread/jthread) to wait messages from server.
  * [ ] Change `std::string` by [protobuf](https://github.com/protocolbuffers/protobuf) for message interchange.
