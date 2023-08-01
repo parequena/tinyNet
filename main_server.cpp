@@ -2,7 +2,6 @@
 #include <span> // std::span
 #include <vector> // std::vector
 #include <ranges> // std::ranges::subrange
-#include <limits> // std::numeric_limits
 
 #include <Server.hpp>
 
@@ -15,7 +14,7 @@ static int better_main(std::span<std::string> const args)
     }
 
     int const original_port { std::stoi(args[0]) };
-    int const uint16_max = std::numeric_limits<std::uint16_t>::max();
+    int const uint16_max = 0xffff; // std::numeric_limits<std::uint16_t>::max();
     if(original_port < 0 || original_port > uint16_max)
     {
         std::cerr << "ERROR: Port number invalid, found: " << std::to_string(original_port) << ", must be in range: [ 0 - " << std::to_string(uint16_max) << "].\n";
