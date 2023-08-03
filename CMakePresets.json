@@ -56,10 +56,10 @@
       "hidden": true,
       "inherits": "common_unix_config",
       "cacheVariables": {
-        "CMAKE_C_COMPILER": "clang",
-        "CMAKE_CXX_COMPILER": "clang++",
+        "CMAKE_C_COMPILER": "clang-16",
+        "CMAKE_CXX_COMPILER": "clang++-16",
         "CMAKE_BUILD_TYPE": "Debug",
-        "SPECIFIC_COMPILER_WARNINGS": "-Weverything;-Wno-c++98-compat;-Wno-unsafe-buffer-usage;"
+        "SPECIFIC_COMPILER_WARNINGS": "-Weverything;-Wno-c++98-compat;-Wno-unsafe-buffer-usage;-Wno-padded"
       }
     },
     {
