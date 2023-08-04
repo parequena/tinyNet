@@ -21,18 +21,18 @@ ${CMAKE_CURRENT_SOURCE_DIR}/src/Client.cpp
 
 #####################################################
 # server
-add_executable(main_server main_server.cpp)
-target_compile_options(main_server PRIVATE ${PROJECT_WARNINGS})
-set_property(TARGET main_server PROPERTY COMPILE_WARNING_AS_ERROR ON)
-target_compile_features(main_server PRIVATE cxx_std_23)
-target_include_directories(main_server PUBLIC include)
-target_link_libraries(main_server PRIVATE ${LINKER_FLAGS} ${SANITIZER_FLAGS} tinyNet)
+add_executable(server_main server_main.cpp)
+target_compile_options(server_main PRIVATE ${PROJECT_WARNINGS})
+set_property(TARGET server_main PROPERTY COMPILE_WARNING_AS_ERROR ON)
+target_compile_features(server_main PRIVATE cxx_std_23)
+target_include_directories(server_main PUBLIC include)
+target_link_libraries(server_main PRIVATE ${LINKER_FLAGS} ${SANITIZER_FLAGS} tinyNet)
 
 #####################################################
 # client
-add_executable(main_client main_client.cpp)
-target_compile_options(main_client PRIVATE ${PROJECT_WARNINGS})
-set_property(TARGET main_client PROPERTY COMPILE_WARNING_AS_ERROR ON)
-target_compile_features(main_client PRIVATE cxx_std_23)
-target_include_directories(main_client PUBLIC include)
-target_link_libraries(main_client PRIVATE ${LINKER_FLAGS} ${SANITIZER_FLAGS} tinyNet)
+add_executable(client_main client_main.cpp)
+target_compile_options(client_main PRIVATE ${PROJECT_WARNINGS})
+set_property(TARGET client_main PROPERTY COMPILE_WARNING_AS_ERROR ON)
+target_compile_features(client_main PRIVATE cxx_std_23)
+target_include_directories(client_main PUBLIC include)
+target_link_libraries(client_main PRIVATE ${LINKER_FLAGS} ${SANITIZER_FLAGS} tinyNet)

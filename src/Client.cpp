@@ -24,8 +24,8 @@ Client::Client(std::string const serverIp, std::uint16_t serverPort)
    auto const inet_v6 = inet_pton(AF_INET6, serverIp.data(), &serverInfo_.sin6_addr);
    if (inet_v6 != 1)
    {
-      auto const inet_v4 = inet_pton(AF_INET, serverIp.data(), &serverInfo_.sin6_addr);
-      serverInfo_.sin6_family = AF_INET;
+      auto const mappedIP4{ "::ffff:" + serverIp };
+      auto const inet_v4 = inet_pton(AF_INET6, mappedIP4.data(), &serverInfo_.sin6_addr);
       Socket::checkValue(inet_v4 != 1, "Server IP neither IPv4 or IPv6.");
    }
 }
@@ -42,8 +42,12 @@ bool Client::sendMessage() const noexcept
          return false;
       }
 
-      auto const sent = sendto(socket_.FileDescriptor(), buffer.data(), buffer.size(), 0,
-        reinterpret_cast<sockaddr const*>(&serverInfo_), sizeof(serverInfo_));
+#if defined(TINY_NET_LINUX)
+      auto const sent = sendto(socket_.FileDescriptor(), buffer.data(), buffer.size(), 0, reinterpret_cast<sockaddr const*>(&serverInfo_), sizeof(serverInfo_));
+#else
+      auto const sent = sendto(socket_.FileDescriptor(), buffer.data(), int(buffer.size()), 0, reinterpret_cast<sockaddr const*>(&serverInfo_), sizeof(serverInfo_));
+#endif // defined(TINY_NET_LINUX)
+
       if (sent == -1)
       {
 #if defined(TINY_NET_LINUX)
@@ -55,8 +59,6 @@ bool Client::sendMessage() const noexcept
       }
    }
 
-   // ssize_t sendto(int sockfd, const void *buf, size_t len, int flags, const struct sockaddr *dest_addr, socklen_t
-   // addrlen);
    return true;
 }
 } // namespace tinyNet

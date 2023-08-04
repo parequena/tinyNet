@@ -41,14 +41,13 @@ bool Server::recieveMessages() noexcept
 
 #if defined(TINY_NET_LINUX)
    socklen_t size{ sizeof(clientInfo) };
-   auto const recfrom = recvfrom(socket_.FileDescriptor(), buffer.data(), buffer.size(), MSG_WAITALL,
-     reinterpret_cast<sockaddr*>(&clientInfo), &size);
+   std::size_t const buffer_size{ buffer.size() };
 #else
    int size{ sizeof(clientInfo) };
-   auto const recfrom = recvfrom(
-     socket_.FileDescriptor(), buffer.data(), int(buffer.size()), 0, reinterpret_cast<sockaddr*>(&clientInfo), &size);
+   int const buffer_size{ buffer.size() };
 #endif // defined(TINY_NET_LINUX)
 
+   auto const recfrom = recvfrom(socket_.FileDescriptor(), buffer.data(), buffer_size, 0, reinterpret_cast<sockaddr*>(&clientInfo), &size);
    if (recfrom == -1)
    {
 #if defined(TINY_NET_LINUX)

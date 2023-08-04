@@ -3,6 +3,8 @@
 
 #include "Socket.hpp"
 
+#include <cstdint> // std::uint16_t
+
 #if defined(TINY_NET_LINUX)
 #include <netinet/in.h> // sockaddr_in6
 #else
