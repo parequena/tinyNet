@@ -24,8 +24,8 @@ Client::Client(std::string const serverIp, std::uint16_t serverPort)
    auto const inet_v6 = inet_pton(AF_INET6, serverIp.data(), &serverInfo_.sin6_addr);
    if (inet_v6 != 1)
    {
-      auto const inet_v4 = inet_pton(AF_INET, serverIp.data(), &serverInfo_.sin6_addr);
-      serverInfo_.sin6_family = AF_INET;
+      auto const mappedIP4{ "::ffff:" + serverIp };
+      auto const inet_v4 = inet_pton(AF_INET6, mappedIP4.data(), &serverInfo_.sin6_addr);
       Socket::checkValue(inet_v4 != 1, "Server IP neither IPv4 or IPv6.");
    }
 }
