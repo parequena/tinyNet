@@ -10,6 +10,8 @@
 #define TINY_NET_LINUX
 #endif
 
+struct sockaddr_in6;
+
 namespace tinyNet
 {
 struct Message
@@ -28,8 +30,16 @@ struct Socket
    ~Socket();
 
    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-   // Getter.
-   [[nodiscard]] constexpr auto FileDescriptor() const noexcept { return fd_; }
+   // Bind socket.
+   bool Bind(sockaddr_in6 const& toBind) const noexcept;
+
+   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+   // Send Message.
+   bool SendMessage(sockaddr_in6 const& destination, std::string const& message) const noexcept;
+
+   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+   // Recieve Message.
+   std::string RecieveMessage(sockaddr_in6 &from) const;
 
    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
    // Check Value.
@@ -47,6 +57,9 @@ private:
 #else
    SOCKET fd_{};
 #endif
+
+   static constexpr std::size_t bufferSize_{ 1024 };
+
 };
 } // namespace tinyNet
 #endif /* TINYNET_SOCKET_HPP */

@@ -2,11 +2,10 @@
 
 #include <iostream> // std::cout
 #include <string>   // std::string
-#include <array>    // std::array
 
 #if defined(TINY_NET_LINUX)
 #include <netinet/ip.h> // sockaddr_in6, AF_INET6
-#include <string.h>     // strerror
+#include <cstring>     // strerror
 #else
 #include <ws2ipdef.h>
 // Link with sockets lib.
@@ -25,10 +24,7 @@ Server::Server(std::uint16_t port)
    serverInfo.sin6_addr = in6addr_any;
    serverInfo.sin6_port = htons(port_);
 
-   auto const binded
-     = bind(socket_.FileDescriptor(), reinterpret_cast<sockaddr const*>(&serverInfo), sizeof(serverInfo));
-   Socket::checkValue(binded, "Failed bind()");
-
+   Socket::checkValue(int(socket_.Bind(serverInfo)), "Failed to bind()");
    std::cout << "Server listening port: " << port_ << '\n';
 }
 
@@ -36,19 +32,10 @@ Server::Server(std::uint16_t port)
 // Recieve Messages and print them.
 bool Server::recieveMessages() noexcept
 {
-   std::array<char, 1024> buffer{};
    sockaddr_in6 clientInfo{};
 
-#if defined(TINY_NET_LINUX)
-   socklen_t size{ sizeof(clientInfo) };
-   std::size_t const buffer_size{ buffer.size() };
-#else
-   int size{ sizeof(clientInfo) };
-   int const buffer_size{ buffer.size() };
-#endif // defined(TINY_NET_LINUX)
-
-   auto const recfrom = recvfrom(socket_.FileDescriptor(), buffer.data(), buffer_size, 0, reinterpret_cast<sockaddr*>(&clientInfo), &size);
-   if (recfrom == -1)
+   auto const recieved = socket_.RecieveMessage(clientInfo);
+   if (recieved.empty())
    {
 #if defined(TINY_NET_LINUX)
       std::cerr << "Failed recvfrom() " << strerror(errno) << "\n";
@@ -58,7 +45,6 @@ bool Server::recieveMessages() noexcept
       return false;
    }
 
-   std::string const recieved{ buffer.begin(), buffer.begin() + recfrom };
    if (recieved == "quit")
    {
       return false;

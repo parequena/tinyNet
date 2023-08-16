@@ -19,7 +19,7 @@ struct Client
 
    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
    // Default Ctor.
-   [[nodiscard]] explicit Client(std::string const serverIp, std::uint16_t serverPort);
+   [[nodiscard]] explicit Client(std::string const &serverIp, std::uint16_t serverPort);
 
    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
    // Send Message.
@@ -31,6 +31,9 @@ private:
 
    // Server info.
    sockaddr_in6 serverInfo_{};
+
+   // Connected?
+   bool connected_{ false };
 };
 } // namespace tinyNet
 #endif /* TINYNET_CLIENT_HPP */
