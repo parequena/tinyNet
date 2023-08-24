@@ -3,7 +3,6 @@ project(tinyNet)
 
 set(TINYNET_PROTOS
    "${CMAKE_CURRENT_SOURCE_DIR}/proto/Message.proto"
-   "${CMAKE_CURRENT_SOURCE_DIR}/proto/addressbook.proto"
 )
 
 # Add protobuf as dependency
