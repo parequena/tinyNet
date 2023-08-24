@@ -2,27 +2,26 @@
 #define TINYNET_SERVER_HPP
 
 #include "Socket.hpp"
+#include "ServerHandler.hpp"
 
 #include <cstdint> // std::uint16_t
-#include <queue>   // std::queue
+#include <functional> // std::function
+#include <unordered_map> // std::unordered_map
 
 namespace tinyNet
 {
 struct Server
 {
-   using message_t = Message;
+   using callback_t = std::function<void()>;
+   using callMap_t = std::unordered_map<Message_Type, callback_t>;
 
    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
    // Default Ctor.
-   [[nodiscard]] explicit Server(std::uint16_t port);
+   [[nodiscard]] explicit Server(std::uint16_t port, callback_t const& callback_raw_string = nullptr);
 
    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
    // Recieve Messages.
-   [[nodiscard]] bool recieveMessages() noexcept;
-
-   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-   // Print Messages.
-   void pollMessages() noexcept;
+   void recieveMessages() const noexcept;
 
 private:
    // Listening socket.
@@ -31,8 +30,9 @@ private:
    // Listening port.
    std::uint16_t port_{};
 
-   // Messages.
-   std::queue<Message> messages_{};
+   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+   // Server Handler.
+   static ServerHandler handler_;
 };
 } // namespace tinyNet
 #endif /* TINYNET_SERVER_HPP */

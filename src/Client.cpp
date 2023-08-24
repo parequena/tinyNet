@@ -29,7 +29,9 @@ Client::Client(std::string const &serverIp, std::uint16_t serverPort)
       Socket::checkValue(int(inet_v4 != 1), "Server IP neither IPv4 or IPv6.");
    }
 
-   connected_ = socket_.SendMessage(serverInfo_, "__connect__");
+   Message connection{};
+   connection.set_type(Message_Type::Message_Type_CLIENT_CONN);
+   connected_ = socket_.SendMessage(serverInfo_, connection);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -44,7 +46,11 @@ bool Client::sendMessage() const noexcept
          return false;
       }
 
-      if (!socket_.SendMessage(serverInfo_, buffer))
+      Message msg{};
+      msg.set_type(Message_Type::Message_Type_RAW_STRING);
+      msg.set_data(buffer);
+
+      if (!socket_.SendMessage(serverInfo_, msg))
       {
 #if defined(TINY_NET_LINUX)
          std::cerr << "Failed sendto() " << strerror(errno) << "\n";

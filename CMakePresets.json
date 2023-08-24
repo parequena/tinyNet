@@ -10,7 +10,8 @@
       "name": "common_config",
       "description": "General settings that apply to all configurations.",
       "hidden": true,
-      "binaryDir": "${sourceDir}/build/${presetName}"
+      "binaryDir": "${sourceDir}/build/${presetName}",
+      "toolchainFile": "${sourceDir}/libs/vcpkg/scripts/buildsystems/vcpkg.cmake"
     },
     {
       "name": "common_unix_config",

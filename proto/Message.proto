@@ -1,0 +1,39 @@
+// TinyNet message exchange.
+
+syntax = "proto3";
+import "google/protobuf/timestamp.proto";
+
+// Optimize for speed.
+option optimize_for = SPEED;
+
+// We don't use the service generation functionality.
+option cc_generic_services = false;
+
+package tinyNet;
+
+message Message
+{
+  enum Type
+  {
+    /*
+    Cliente                    || Servidor
+    -----------------------------------------------------
+    Cliente conectandose.         Conexión aceptada.
+                                  Conexión rechazada.
+    Cliente desconectandose.
+                                  Desconexión aceptada.
+    Cliente manda mensaje.
+                                  Servidor manda mesaje.
+    Cliente apaga Servidor.
+                                  Servidor Desconecta clientes.
+    */
+    CLIENT_CONN = 0;
+    CLINET_CONN_ACK_ACC = 1;
+    CLINET_CONN_ACK_REJ = 2;
+    RAW_STRING = 3;
+  };
+
+  google.protobuf.Timestamp time = 1;
+  Type type = 2;
+  optional string data = 3;
+}

@@ -15,8 +15,12 @@
 namespace tinyNet
 {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Initialize handler.
+ServerHandler Server::handler_{};
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Default Ctor.
-Server::Server(std::uint16_t port)
+Server::Server(std::uint16_t port, callback_t const& callback_raw_string)
     : port_{ port }
 {
    sockaddr_in6 serverInfo{};
@@ -26,45 +30,45 @@ Server::Server(std::uint16_t port)
 
    Socket::checkValue(int(socket_.Bind(serverInfo)), "Failed to bind()");
    std::cout << "Server listening port: " << port_ << '\n';
+
+   handler_.maxClients(1);
+   if(callback_raw_string)
+   {
+      std::cout << "callback\n";
+   }
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Recieve Messages and print them.
-bool Server::recieveMessages() noexcept
+void Server::recieveMessages() const noexcept
 {
-   sockaddr_in6 clientInfo{};
-
-   auto const recieved = socket_.RecieveMessage(clientInfo);
-   if (recieved.empty())
+   while(true)
    {
-#if defined(TINY_NET_LINUX)
-      std::cerr << "Failed recvfrom() " << strerror(errno) << "\n";
-#else
-      std::cerr << "Failed recvfrom() " << std::to_string(WSAGetLastError()) << "\n";
-#endif // defined(TINY_NET_LINUX)
-      return false;
-   }
+      sockaddr_in6 clientInfo{};
+      auto const recieved = socket_.RecieveMessage(clientInfo);
 
-   if (recieved == "quit")
-   {
-      return false;
-   }
+      auto const type = recieved.type();
 
-   messages_.emplace(Message{ recieved });
+      if(type == Message_Type::Message_Type_CLIENT_CONN)
+      {
+         auto const clientIp = Socket::GetIp(clientInfo);
+         auto const added = handler_.addClient(clientIp);
+         
+         Message msg{};
+         auto const msg_type = added ? Message_Type::Message_Type_CLINET_CONN_ACK_ACC : Message_Type::Message_Type_CLINET_CONN_ACK_REJ;
+         msg.set_type( msg_type );
 
-   return true;
-}
+         socket_.SendMessage(clientInfo, msg);
+         continue;
+      }
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Print Messages.
-void Server::pollMessages() noexcept
-{
-   std::cout << "Messages:" << messages_.size() << '\n';
-   while (!messages_.empty())
-   {
-      auto const& front = messages_.front();
-      std::cout << "[\t" + front.data + "\t]\n";
-      messages_.pop();
+      if(type == Message_Type::Message_Type_RAW_STRING)
+      {
+         std::cout << "Recieved: " << recieved.data() << '\n';
+         continue;
+      }
+
+      return;
    }
 }
 } // namespace tinyNet

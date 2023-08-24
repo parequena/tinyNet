@@ -15,8 +15,6 @@ namespace tinyNet
 {
 struct Client
 {
-   using message_t = Message;
-
    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
    // Default Ctor.
    [[nodiscard]] explicit Client(std::string const &serverIp, std::uint16_t serverPort);

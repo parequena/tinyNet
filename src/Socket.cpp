@@ -6,7 +6,8 @@
 #if defined(TINY_NET_LINUX)
 #include <netinet/ip.h> // socket, AF_INET6, SOCK_DGRAM, IPPROTO_UDP, IPPROTO_IPV6, IPV6_V6ONLY
 #include <unistd.h>     // close
-#include <cstring>     // strerror
+#include <cstring>      // strerror
+#include <arpa/inet.h>  // inet_ntop
 #else
 #include <ws2ipdef.h>   // IPV6_V6ONLY
 #endif                  // defined(TINY_NET_LINUX)
@@ -42,12 +43,15 @@ bool Socket::Bind(sockaddr_in6 const& toBind) const noexcept
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Send Message.
-bool Socket::SendMessage(sockaddr_in6 const& destination, std::string const& message) const noexcept
+bool Socket::SendMessage(sockaddr_in6 const& destination, tinyNet::Message const& message) const noexcept
 {
+   std::array<std::uint8_t, bufferSize_> data{};
+   message.SerializeToArray(&data, data.size());
+
 #if defined(TINY_NET_LINUX)
-   auto const sent = sendto(fd_, message.data(), message.size(), 0, reinterpret_cast<sockaddr const*>(&destination), sizeof(destination));
+   auto const sent = sendto(fd_, data.data(), data.size(), 0, reinterpret_cast<sockaddr const*>(&destination), sizeof(destination));
 #else
-   auto const sent = sendto(fd_, message.data(), int(message.size()), 0, reinterpret_cast<sockaddr const*>(&destination), sizeof(destination));
+   auto const sent = sendto(fd_, data.data(), int(data.size()), 0, reinterpret_cast<sockaddr const*>(&destination), sizeof(destination));
 #endif // defined(TINY_NET_LINUX)
 
    return sent != 0;
@@ -55,7 +59,7 @@ bool Socket::SendMessage(sockaddr_in6 const& destination, std::string const& mes
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Recieve Message.
-std::string Socket::RecieveMessage(sockaddr_in6 &from) const
+Message Socket::RecieveMessage(sockaddr_in6 &from) const
 {
    std::array<char, bufferSize_> buffer{};
 
@@ -69,7 +73,11 @@ std::string Socket::RecieveMessage(sockaddr_in6 &from) const
 
    auto const recfrom = recvfrom(fd_, buffer.data(), buffer_size, 0, reinterpret_cast<sockaddr*>(&from), &size);
    Socket::checkValue(int(recfrom == -1), "Failed recvfrom()");
-   return std::string{ buffer.begin(), buffer.begin() + recfrom };
+
+   Message ret{};
+   ret.ParseFromArray(&buffer, buffer.size());
+
+   return ret;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -100,5 +108,15 @@ void Socket::checkValue(int const value, std::string message)
    {
       throw std::invalid_argument(message + '\n');
    }
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Get Ip.
+std::string Socket::GetIp(sockaddr_in6 const& info)
+{
+   std::array<char, INET6_ADDRSTRLEN> str{};
+   auto const ip = inet_ntop(AF_INET6, &info, str.data(), INET6_ADDRSTRLEN);
+
+   return ip == nullptr ? "" : ip;
 }
 } // namespace tinyNet

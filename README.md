@@ -21,6 +21,12 @@ I'm following and trying to create something simpler of [Valve's GameNetworkingS
   * GCC 13 or later
   * Clang 16 or later
   * Visual Studio 2022 or later
+* Vcpkg
+  * build-essential
+  * tar
+  * curl
+  * zip
+  * unzip
 
 #### Using CMake (preferred):
 
@@ -40,7 +46,8 @@ I'm following and trying to create something simpler of [Valve's GameNetworkingS
 
 Let's see an example with `gcc_release` as preset, but you can choose another from this list.
 ```
-$ git clone https://github.com/parequena/tinyNet
+$ git clone --recurse-submodules https://github.com/parequena/tinyNet
+$ ./libs/vcpkg/bootstrap-vcpkg.sh
 $ mkdir build
 $ cd build
 $ cmake .. --preset gcc_release

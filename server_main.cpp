@@ -22,13 +22,9 @@ static int better_main(std::span<std::string> const args)
       return EXIT_FAILURE;
    }
 
-   std::uint16_t const port = static_cast<std::uint16_t>(original_port);
+   auto const port = static_cast<std::uint16_t>(original_port);
    tinyNet::Server server{ port };
-
-   while (server.recieveMessages())
-      ;
-
-   server.pollMessages();
+   server.recieveMessages();
 
    return EXIT_SUCCESS;
 }
@@ -37,6 +33,8 @@ int main(int const argc, char const* const* const argv)
 {
    auto result = std::ranges::subrange(&argv[1], &argv[argc]);
    std::vector<std::string> args{ result.begin(), result.end() };
+
+   args.emplace_back("7876");
 
    return better_main(args);
 }
