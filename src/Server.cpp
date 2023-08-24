@@ -50,7 +50,7 @@ bool Server::recieveMessages() noexcept
       return false;
    }
 
-   messages_.emplace(Message{ recieved });
+   messages_.emplace( recieved );
 
    return true;
 }
@@ -63,7 +63,7 @@ void Server::pollMessages() noexcept
    while (!messages_.empty())
    {
       auto const& front = messages_.front();
-      std::cout << "[\t" + front.data + "\t]\n";
+      std::cout << "[\t" + front + "\t]\n";
       messages_.pop();
    }
 }

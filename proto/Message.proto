@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+// Optimize for speed.
+option optimize_for = SPEED;
+
+// We don't use the service generation functionality.
+option cc_generic_services = false;
+
+package tinyNet;
+
+message Message
+{
+   enum Type
+   {
+      INVALID = 0;
+      STRING_RAW = 1;
+      TYPE_SIZE = 2;
+   };
+
+   google.protobuf.Timestamp timestamp = 1;
+   Type type = 2;
+   optional string data = 3;
+}

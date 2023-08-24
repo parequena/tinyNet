@@ -1,0 +1,8 @@
+{
+	"$schema": "https://raw.githubusercontent.com/microsoft/vcpkg/master/scripts/vcpkg.schema.json",
+	"name": "tinynet",
+	"version-string": "0.1.0",
+	"description": "A basic transport layer.",
+	"homepage": "https://github.com/parequena/tinyNet",
+	"dependencies": [ "protobuf" ]
+}

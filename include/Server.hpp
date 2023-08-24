@@ -10,8 +10,6 @@ namespace tinyNet
 {
 struct Server
 {
-   using message_t = Message;
-
    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
    // Default Ctor.
    [[nodiscard]] explicit Server(std::uint16_t port);
@@ -32,7 +30,7 @@ private:
    std::uint16_t port_{};
 
    // Messages.
-   std::queue<Message> messages_{};
+   std::queue<std::string> messages_{};
 };
 } // namespace tinyNet
 #endif /* TINYNET_SERVER_HPP */

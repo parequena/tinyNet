@@ -10,15 +10,34 @@
 #define TINY_NET_LINUX
 #endif
 
+
+#ifdef __GNUC__
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wsign-conversion"
+#pragma GCC diagnostic ignored "-Weffc++"
+#pragma GCC diagnostic ignored "-Wuseless-cast"
+#pragma GCC diagnostic ignored "-Wshadow"
+#pragma GCC diagnostic ignored "-Wconversion"
+#elif defined(__clang__)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wc++98-compat-pedantic"
+#pragma clang diagnostic ignored "-Wreserved-identifier"
+#pragma clang diagnostic ignored "-Wglobal-constructors"
+#endif
+
+#include <Message.pb.h>
+
+#ifdef __GNUC__
+#pragma GCC diagnostic pop
+#elif defined(__clang__)
+#pragma clang diagnostic pop
+#endif
+
+
 struct sockaddr_in6;
 
 namespace tinyNet
 {
-struct Message
-{
-   std::string data{};
-};
-
 struct Socket
 {
    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
