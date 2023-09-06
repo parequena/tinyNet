@@ -45,7 +45,8 @@ void Server::recieveMessages() const noexcept
    while(true)
    {
       sockaddr_in6 clientInfo{};
-      auto const recieved = socket_.RecieveMessage(clientInfo);
+      auto const& recieved = socket_.RecieveMessage(clientInfo);
+      std::cout << "Message recieved!\n";
 
       auto const type = recieved.type();
 

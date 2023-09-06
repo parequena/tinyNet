@@ -32,6 +32,11 @@ Client::Client(std::string const &serverIp, std::uint16_t serverPort)
    Message connection{};
    connection.set_type(Message_Type::Message_Type_CLIENT_CONN);
    connected_ = socket_.SendMessage(serverInfo_, connection);
+   auto const& serverConnAck = socket_.RecieveMessage(serverInfo_);
+   if(serverConnAck.type() == Message_Type::Message_Type_CLINET_CONN_ACK_REJ)
+   {
+      throw std::domain_error( "Connection refused by server: " + serverIp + ":" + std::to_string(serverPort) );
+   }
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
